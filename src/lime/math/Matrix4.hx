@@ -378,6 +378,31 @@ abstract Matrix4(Float32Array) from Float32Array to Float32Array
 		this[14] = -(zNear + zFar) * sz;
 		this[15] = 1;
 	}
+	
+	/**
+		Initializes this matrix with values for a perspective projection, useful in rendering
+		@param	fovy	The field of view
+		@param	aspect	The aspect ratio
+		@param	zNear	The near depth-clipping plane position
+		@param	zFar	The far depth-clipping plane position
+	**/
+	
+	function createPerspectiveZO(fovy:Float, aspect:Float, zNear:Float, zFar:Float):Void {
+		if (Math.abs(aspect - (Math.pow(2, -23))) > 0.0) {
+			var top = fovy * zNear;
+			var bottom = -top;
+			var right = top * aspect;
+			var left = -right;
+
+			this[0] = 2.0 * zNear / (right - left);
+			this[5] = 2.0 * zNear / (top - bottom);
+			this[8] = (right + left) / (right - left);
+			this[9] = (top + bottom) / (top - bottom);
+			this[10] = -(zFar + zNear) / (zFar - zNear);
+			this[11] = -1.0;
+			this[14] = -2 * zFar * zNear / (zFar - zNear);
+		}
+	}
 
 	/**
 	 * Returns the transformation matrix's translation, rotation, and scale settings as a Vector of three Vector4 objects.
